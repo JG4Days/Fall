@@ -24,6 +24,7 @@ import javafx.scene.shape.Shape;
 import javafx.event.Event;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -32,615 +33,719 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.text.TextAlignment;
 
 public class MostBasicJavaFXMove extends Application {
 
-	ArrayList<Rectangle> badblockz = new ArrayList();
-	ArrayList<Circle> badcirclez = new ArrayList();
-	ArrayList<String> input = new ArrayList<String>();
-	Rectangle rect;
-	Rectangle box;
-	Rectangle bg;
-	Rectangle bg2;
-	Rectangle start;
-	Rectangle winbox;
-	Rectangle losebox;
-	Badguys[] badarrayz;
-	double velY;
-	Text score;
-	Media media;
-	MediaPlayer beat;
-	Human henry;
-	Win win;
+    ArrayList<Rectangle> badblockz = new ArrayList();
+    ArrayList<Circle> badcirclez = new ArrayList();
+    ArrayList<String> input = new ArrayList<String>();
+    Rectangle rect, box, background, background2, start, winbox, losebox, losebox2;
+    Platform[] testList, testList2;
+    Badguys[] badarrayz, badarrayz2;
+    double velY;
+    Text score, wintext, lose, lose2, mctext, enter;
+    Media media, media2;
+    MediaPlayer beat, Rick;
+    Human henry;
+    Win win, win2;
+    Collect rtx;
 
-	@Override
-	public void start(Stage primaryStage) {
+    @Override
+    public void start(Stage primaryStage) {
 
-    	Group root = new Group();
-    	Group root2 = new Group();
-    	Scene scene = new Scene(root);
+        Group root = new Group();
+        Group root2 = new Group();
+        Scene scene = new Scene(root);
 
-    	Platform[] testList = new Platform[7];
-    	badarrayz = new Badguys[2];
-    	velY = 0;
-    	henry = new Human(90, 10, 100);
-    	win = new Win(300, 950);
+        testList = new Platform[7];
+        testList2 = new Platform[7];
+        badarrayz = new Badguys[2];
+        badarrayz2 = new Badguys[2];
+        velY = 0;
+        henry = new Human(90, 10, 100);
+        win = new Win(300, 950);
+        win2 = new Win(3, 950);
+        rtx = new Collect(250, 400);
 
-    	media = new Media("file:///home/james/Downloads/MostBasicJavaFXMove/src/Funk.wav");
-    	beat = new MediaPlayer(media);
-    	beat.play();
+        media = new Media("file:///home/james/Downloads/MostBasicJavaFXMove/src/Funk.wav");
+        beat = new MediaPlayer(media);
+        beat.play();
 
-    	primaryStage.setTitle("Game");
+        media2 = new Media("file:///home/james/Downloads/MostBasicJavaFXMove/src/NeverGonna.wav");
+        Rick = new MediaPlayer(media2);
 
-    	primaryStage.setScene(scene);
+        primaryStage.setTitle("Game");
 
-    	Canvas canvas = new Canvas(400, 1000);
+        primaryStage.setScene(scene);
 
-    	GraphicsContext gc = canvas.getGraphicsContext2D();
+        Canvas canvas = new Canvas(400, 1000);
 
-    	Font theFont = Font.font("Arial", FontWeight.BOLD, 50);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
 
-    	Font theFont2 = Font.font("Arial", FontWeight.BOLD, 15);
+        Font theFont = Font.font("Arial", FontWeight.BOLD, 50);
 
-    	Text mctext = new Text(canvas.getWidth() / 2 - 70, canvas.getHeight() / 2, "Fall!");
-    	mctext.setFill(Color.BLACK);
-    	mctext.setFont(theFont);
+        Font theFont2 = Font.font("Arial", FontWeight.BOLD, 15);
 
-    	Text enter = new Text(canvas.getWidth() / 2 - 90, canvas.getHeight() / 2 + 30, "Press enter to continue");
-    	enter.setFill(Color.BLACK);
-    	enter.setFont(theFont2);
+        Text mctext = new Text(canvas.getWidth() / 2 - 60, canvas.getHeight() / 2, "Fall!");
+        mctext.setFill(Color.BLACK);
+        mctext.setFont(theFont);
 
-    	score = new Text(canvas.getWidth() / 2, 100, "Score: " + henry.score);
-    	score.setFill(Color.TRANSPARENT);
-    	score.setFont(theFont2);
+        Text enter = new Text(canvas.getWidth() / 2 - 130, canvas.getHeight() / 2 + 30, "Press enter to continue\n Remember to collect the RTX 2060\n6gbFounders Edition with\nRay Tracing and a dual\nfan design for extra points!");
+        enter.setFill(Color.BLACK);
+        enter.setFont(theFont2);
+        enter.setTextAlignment(TextAlignment.CENTER);
 
-    	Text wintext = new Text(canvas.getWidth() / 2, 100, "Winner!");
-    	wintext.setFill(Color.TRANSPARENT);
-    	wintext.setFont(theFont2);
+        score = new Text(300, 25, "Score: " + henry.score);
+        score.setFill(Color.TRANSPARENT);
+        score.setFont(theFont2);
 
-    	Text lose = new Text(canvas.getWidth() / 2 - 100, 200, "You Died! Awesome Job!");
-    	lose.setFill(Color.TRANSPARENT);
-    	lose.setFont(theFont2);
+        wintext = new Text(canvas.getWidth() / 2 - 100, 100, "Winner!");
+        wintext.setTextAlignment(TextAlignment.CENTER);
+        wintext.setFill(Color.TRANSPARENT);
+        wintext.setFont(theFont2);
 
-    	bg = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
-    	bg.setFill(Color.LIGHTBLUE);
+        lose = new Text(canvas.getWidth() / 2 - 100, 200, "You Died! Awesome Job!");
+        lose.setFill(Color.TRANSPARENT);
+        lose.setFont(theFont2);
 
-   	 
-     	bg2 = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
-    	bg2.setFill(Color.BLACK);
+        lose2 = new Text(canvas.getWidth() / 2 - 100, 200, "You Died! Awesome Job!");
+        lose2.setFill(Color.RED);
+        lose2.setFont(theFont2);
 
-   	 
-    	winbox = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
-    	winbox.setFill(Color.TRANSPARENT);
+        background = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
+        background.setFill(Color.LIGHTBLUE);
 
-    	losebox = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
-    	losebox.setFill(Color.TRANSPARENT);
+        background2 = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
+        background2.setFill(Color.BLUE);
 
-    	start = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
-    	start.setFill(Color.LIGHTBLUE);
+        winbox = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
+        winbox.setFill(Color.TRANSPARENT);
 
-    	box = new Rectangle(0, 0, 0, 0);
-    	box.setFill(Color.PLUM);
+        losebox = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
+        losebox.setFill(Color.TRANSPARENT);
 
-    	rect = new Rectangle(0, 0, 0, 0);
-    	rect.setFill(Color.BLUE);
+        losebox2 = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
+        losebox2.setFill(Color.AQUA);
 
-    	AnimationTimer timer = new MyTimer();
+        start = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
+        start.setFill(Color.LIGHTBLUE);
 
-    	testList[0] = new Platform(30, 100);
-    	testList[1] = new Platform(60, 175);
-    	testList[2] = new Platform(90, 250);
-    	testList[3] = new Platform(120, 325);
-    	testList[4] = new Platform(150, 400);
-    	testList[5] = new Platform(180, 475);
-    	testList[6] = new Platform(210, 550);
-    	badarrayz[0] = new Badguys(50, 125, 100, 2);
-    	badarrayz[1] = new Badguys(20, 415, 100, 2);
+        box = new Rectangle(0, 0, 0, 0);
+        box.setFill(Color.PLUM);
 
-    	scene.setOnKeyPressed(
-            	new EventHandler<KeyEvent>() {
-        	@Override
-        	public void handle(KeyEvent event) {
-            	score.setText("Score: " + henry.score);
-            	henry.setY(henry.getY() + velY);
+        rect = new Rectangle(0, 0, 0, 0);
+        rect.setFill(Color.BLUE);
 
-           	 
-            	if (!henry.amItouch(testList)) {
-                	velY += 1;
-            	} else {
-                	velY = 0;
-            	}
-            	henry.update();
+        AnimationTimer timer = new MyTimer();
 
-             	if (event.getCode() == KeyCode.S) {
-                 	scene.setRoot(root);
-                	 
-             	}
-              	if (event.getCode() == KeyCode.A) {
-                 	scene.setRoot(root2);
-                	 
-             	}
-           	 
-            	if (event.getCode() == KeyCode.ENTER) {
-               	 
-                	start.setFill(Color.TRANSPARENT);
-                	mctext.setFill(Color.TRANSPARENT);
-                	enter.setFill(Color.TRANSPARENT);
-                	score.setFill(Color.BLACK);
-                	losebox.setFill(Color.TRANSPARENT);
-            	}
-            	if (event.getCode() == KeyCode.RIGHT) {
-                	henry.moveRight();
-            	}
-            	if (event.getCode() == KeyCode.LEFT) {
-                	henry.moveLeft();
-            	}
+        testList[0] = new Platform(30, 100);
+        testList[1] = new Platform(120, 175);
+        testList[2] = new Platform(180, 250);
+        testList[3] = new Platform(140, 325);
+        testList[4] = new Platform(100, 400);
+        testList[5] = new Platform(160, 475);
+        testList[6] = new Platform(210, 550);
+        testList2[0] = new Platform(30, 100);
+        testList2[1] = new Platform(120, 175);
+        testList2[2] = new Platform(180, 250);
+        testList2[3] = new Platform(140, 325);
+        testList2[4] = new Platform(100, 400);
+        testList2[5] = new Platform(160, 475);
+        testList2[6] = new Platform(210, 550);
+        badarrayz[0] = new Badguys(50, 125, 100, 2);
+        badarrayz[1] = new Badguys(20, 415, 100, 2);
+        badarrayz2[0] = new Badguys(50, 125, 100, 2);
+        badarrayz2[1] = new Badguys(20, 415, 100, 2);
 
-            	//
-            	if (henry.x > 400) {
-                	henry.x = 400;
-            	} else if (henry.x < 10) {
-                	henry.x = 10;
-            	}
-            	if (henry.y > 550) {
-                	henry.y = 550;
-            	} else if (henry.y < 1) {
-                	henry.y = 1;
-            	}
+        scene.setOnKeyPressed(
+                new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                score.setText("Score: " + henry.getScore());
+                henry.setY(henry.getY() + velY);
 
-            	for (Badguys x : badarrayz) {
-                	if (x.isMove) {
-                    	if (x.getX() > canvas.getWidth() - 20) {
-                        	x.direction = false;
-                    	}
-                    	if (x.getX() < 0) {
-                        	x.direction = true;
-                    	}
-                    	if (x.direction) {
-                        	x.moveRight();
-                    	} else {
-                        	x.moveLeft();
-                    	}
-                    	if (henry.amItouchE(badarrayz)) {
-                        	System.out.println("ded");
-                        	henry.health = 0;
-                    	}
+                if (!henry.amItouch(testList)) {
+                    velY += 1;
+                } else {
+                    velY = 0;
+                }
+                henry.update();
 
-                	}
-            	}
-            	if (henry.health == 0) {
-                	lose.setFill(Color.RED);
-                	losebox.setFill(Color.AQUA);
-            	}
-            	if (henry.amIWin(win)) {
-                	henry.score = +100;
-                	henry.level2 = true;
-                	scene.setRoot(root2);
-//                	System.out.println("Winner! Your score was: " + henry.score);
-//                	score.setX(canvas.getWidth() / 2);
-//                	score.setY(canvas.getHeight() / 2);
-//                	winbox.setFill(Color.LIGHTPINK);
-//                	wintext.setFill(Color.BROWN);
-            	}
-            	badarrayz[1].moveNo();
-            	System.out.println(henry.getX() + ", " + henry.getY());
+                if (event.getCode() == KeyCode.ENTER) {
 
-        	}
-    	}
-    	);
+                    start.setFill(Color.TRANSPARENT);
+                    mctext.setFill(Color.TRANSPARENT);
+                    enter.setFill(Color.TRANSPARENT);
+                    score.setFill(Color.BLACK);
+                    losebox.setFill(Color.TRANSPARENT);
+                    henry.FL.setOpacity(0);
 
-//    	scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
-//        	@Override
-//        	public void handle(KeyEvent event) {
-//            	if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) {
+                }
+                if (event.getCode() == KeyCode.RIGHT) {
+                    henry.moveRight();
+                }
+                if (event.getCode() == KeyCode.LEFT) {
+                    henry.moveLeft();
+                }
+                if (event.getCode() == KeyCode.W) {
+                    henry.secret = true;
+                }
+                if (henry.secret) {
+                    if (event.getCode() == KeyCode.I) {
+                        henry.secret2 = true;
+                    }
+                }
+                if (henry.secret2) {
+                    if (event.getCode() == KeyCode.N) {
+                        henry.easteregg = true;
+                        wintext.setText("EASTER EGG FOUND!\nPress and Hold Any Key to see your score!");
+
+                    }
+
+                }
+                if (event.getCode() == KeyCode.J) {
+                    beat.play();
+                    Rick.pause();
+                }
+                if (event.getCode() == KeyCode.K) {
+                    beat.pause();
+                    Rick.play();
+                }
+                
+                if (henry.getX() > 400) {
+                    henry.x = 400;
+                } else if (henry.getX() < 10) {
+                    henry.x = 10;
+                }
+                if (henry.getY() > 930) {
+                    henry.y = 930;
+                    velY = 0;
+                } else if (henry.getY() < 1) {
+                    henry.y = 1;
+                }
+
+                for (Badguys x : badarrayz) {
+                    if (x.isMove) {
+                        if (x.getX() > canvas.getWidth() - 20) {
+                            x.direction = false;
+                        }
+                        if (x.getX() < 0) {
+                            x.direction = true;
+                        }
+                        if (x.direction) {
+                            x.moveRight();
+                        } else {
+                            x.moveLeft();
+                        }
+                        if (henry.amItouchE(badarrayz)) {
+                            System.out.println("ded");
+                            henry.health = 0;
+                        }
+
+                    }
+                }
+                if (henry.collect(rtx)) {
+                    rtx.photo.setOpacity(0);
+                    henry.setScore(25);
+                }
+                if (henry.health == 0) {
+                    lose.setFill(Color.RED);
+                    losebox.setFill(Color.AQUA);
+                }
+
+                if (henry.amIWin(win) || henry.easteregg) {
+                    henry.setScore(henry.getScore() + 50);
+                    scene.setRoot(root2);
+                    root.getChildren().remove(henry);
+                    root.getChildren().remove(henry.FR);
+                    root.getChildren().remove(henry.FL);
+                    root.getChildren().remove(score);
+                    root2.getChildren().add(score);
+                    root2.getChildren().add(henry);
+                    root2.getChildren().add(henry.FR);
+                    root2.getChildren().add(henry.FL);
+                    henry.update();
+                }
+                if (henry.amIWinFinal(win2) || henry.easteregg) {
+                    winbox.setFill(Color.LIGHTPINK);
+                    wintext.setFill(Color.BROWN);
+                    score.setX(canvas.getWidth() / 2 - 125);
+                    score.setY(canvas.getHeight() / 2 - 50);
+                    score.setFont(theFont);
+                    root2.getChildren().remove(henry);
+                    root2.getChildren().remove(henry.FR);
+                    root2.getChildren().remove(henry.FL);
+                }
+
+//                if (henry.amIWinFinal(win2)) {
+//                    henry.setScore(100);
+//                }
+                if (henry.easteregg) {
+                    henry.setScore(9999);
+                }
+                badarrayz[1].moveNo();
+                System.out.println(henry.getX() + ", " + henry.getY());
+
+            }
+        }
+        );
+
+//        scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+//            @Override
+//            public void handle(KeyEvent event) {
+//                if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) {
 //
-//            	}
-//        	}
-//    	});
-    	root.getChildren().add(canvas);
-    	root.getChildren().add(bg);
-   	 
-   	 
-   	 
-    	root.getChildren().add(rect);
-    	root.getChildren().add(box);
-    	root.getChildren().add(win);
-    	for (Platform c : testList) {
-        	root.getChildren().add(c);
-    	}
-    	for (Badguys x : badarrayz) {
-        	root.getChildren().add(x);
-        	root.getChildren().add(x.BGR);
-        	root.getChildren().add(x.BGL);
-        	root.getChildren().add(x.BGS);
-    	}
-    	root.getChildren().add(henry);
-    	root.getChildren().add(henry.FR);
-    	root.getChildren().add(henry.FL);
-    	root.getChildren().add(start);
-    	root.getChildren().add(mctext);
-    	root.getChildren().add(enter);
-    	root.getChildren().add(winbox);
-    	root.getChildren().add(wintext);
-    	root.getChildren().add(losebox);
-    	root.getChildren().add(lose);
-    	root.getChildren().add(score);
-   	 
-   	 
-   	 
-//    	root2.getChildren().add(bg2);
-//    	root2.getChildren().add(rect);
-//    	root2.getChildren().add(box);
-//    	root2.getChildren().add(win);
-//    	for (Platform c : testList) {
-//        	root2.getChildren().add(c);
-//    	}
-//    	for (Badguys x : badarrayz) {
-//        	root2.getChildren().add(x);
-//        	root2.getChildren().add(x.BGR);
-//        	root2.getChildren().add(x.BGL);
-//        	root2.getChildren().add(x.BGS);
-//    	}
-//    	root2.getChildren().add(henry);
-//    	root2.getChildren().add(henry.FR);
-//    	root2.getChildren().add(henry.FL);
-//    	root2.getChildren().add(winbox);
-//    	root2.getChildren().add(wintext);
-//    	root2.getChildren().add(losebox);
-//    	root2.getChildren().add(lose);
-//    	root2.getChildren().add(score);
+//                }
+//            }
+//        });
+        root.getChildren().add(canvas);
+        root.getChildren().add(background);
 
-    	timer.start();
+        root.getChildren().add(rect);
+        root.getChildren().add(box);
+        root.getChildren().add(win);
+        for (Platform c : testList) {
+            root.getChildren().add(c);
+        }
+        for (Badguys x : badarrayz) {
+            root.getChildren().add(x);
+            root.getChildren().add(x.BGR);
+            root.getChildren().add(x.BGL);
+            root.getChildren().add(x.BGS);
+        }
+        root.getChildren().add(henry);
+        root.getChildren().add(henry.FR);
+        root.getChildren().add(henry.FL);
+        root.getChildren().add(rtx);
+        root.getChildren().add(rtx.photo);
+        root.getChildren().add(start);
+        root.getChildren().add(mctext);
+        root.getChildren().add(enter);
+        root.getChildren().add(losebox);
+        root.getChildren().add(lose);
+        root.getChildren().add(score);
 
-    	primaryStage.show();
-	}
+        root2.getChildren().add(background2);
+        root2.getChildren().add(win2);
+        for (Platform c : testList2) {
+            root2.getChildren().add(c);
+        }
+        for (Badguys x : badarrayz2) {
+            root2.getChildren().add(x);
+            root2.getChildren().add(x.BGR);
+            root2.getChildren().add(x.BGL);
+            root2.getChildren().add(x.BGS);
+        }
 
-	public static void main(String[] args) {
-    	launch(args);
+        root2.getChildren().add(winbox);
+        root2.getChildren().add(wintext);
+//        root2.getChildren().add(losebox2);
+//        root2.getChildren().add(lose2);
 
-	}
+        timer.start();
+        primaryStage.show();
+    }
 
-	private class MyTimer extends AnimationTimer {
+    public static void main(String[] args) {
+        launch(args);
 
-    	boolean movedown = true;
+    }
 
-    	@Override
-    	public void handle(long now) {
+    private class MyTimer extends AnimationTimer {
 
-        	if (henry.amIWin(win)) {
-   	 
-    	}
-            	doHandle();
+        boolean movedown = true;
 
-        	}
+        @Override
+        public void handle(long now) {
 
-   	 
+            if (henry.amIWin(win)) {
 
-    	private void doHandle() {
-        	checkBounds(box);
-        	if (movedown && rect.getY() < 555) {
-            	rect.setY(rect.getY() + 5);
-        	}
-        	if (movedown && rect.getY() > 1) {
-            	rect.setY(rect.getY() - 5);
-        	}
-        	if (rect.getY() > 550) {
-            	movedown = false;
-        	}
-        	if (rect.getY() < 1) {
-            	movedown = true;
-        	}
+            }
+            doHandle();
 
-    	}
-	}
+        }
 
-	private void checkBounds(Rectangle box) {
+        private void doHandle() {
+            checkBounds(box);
+            if (movedown && rect.getY() < 555) {
+                rect.setY(rect.getY() + 5);
+            }
+            if (movedown && rect.getY() > 1) {
+                rect.setY(rect.getY() - 5);
+            }
+            if (rect.getY() > 150) {
+                movedown = false;
+            }
+            if (rect.getY() < 1) {
+                movedown = true;
+            }
 
-    	boolean collisionDetected = false;
-    	for (Rectangle badblock : badblockz) {
-        	if (box.getBoundsInParent().intersects(badblock.getBoundsInParent())) {
-            	collisionDetected = true;
-            	badblock.setFill(Color.RED);
-        	} else {
-            	badblock.setFill(Color.BLACK);
-        	}
-    	}
-    	if (collisionDetected) {
-        	box.setFill(Color.RED);
-    	} else {
-        	box.setFill(Color.BLUE);
+        }
+    }
 
-    	}
-	}
+    private void checkBounds(Rectangle box) {
+
+        boolean collisionDetected = false;
+        for (Rectangle badblock : badblockz) {
+            if (box.getBoundsInParent().intersects(badblock.getBoundsInParent())) {
+                collisionDetected = true;
+                badblock.setFill(Color.RED);
+            } else {
+                badblock.setFill(Color.BLACK);
+            }
+        }
+        if (collisionDetected) {
+            box.setFill(Color.RED);
+        } else {
+            box.setFill(Color.BLUE);
+
+        }
+    }
 
 }
 
 class Human extends Rectangle {
 
-	boolean intersect;
-	boolean level2 = false;
-	double x;
-	double y;
-	int health = 100;
-	int score = 0;
-	double speed = 3;
-	double gravity = 1;
-	Image FallR = new Image("file:src/FallR.png");
-	public ImageView FR = new ImageView(FallR);
-	Image FallL = new Image("file:src/FallL.png");
-	public ImageView FL = new ImageView(FallL);
+    boolean intersect;
+    boolean woneone = false;
+    boolean secret = false;
+    boolean secret2 = false;
+    boolean easteregg = false;
+    double x;
+    double y;
+    int health = 100;
+    int score = 0;
+    double speed = 3;
+    double gravity = 1;
+    Image FallR = new Image("file:src/FallR.png");
+    public ImageView FR = new ImageView(FallR);
+    Image FallL = new Image("file:src/FallL.png");
+    public ImageView FL = new ImageView(FallL);
 
-	public Human(int x, int y, int health) {
-    	super(x, y, 50, 50);
-    	health = this.health;
-    	this.setFill(Color.TRANSPARENT);
-    	this.x = x;
-    	this.y = y;
-    	this.FR.setX(this.getX());
-    	this.FR.setY(this.getY());
-    	this.FR.setFitWidth(50);
-    	this.FR.setFitHeight(50);
-    	this.FL.setX(this.getX());
-    	this.FL.setY(this.getY());
-    	this.FL.setFitWidth(50);
-    	this.FL.setFitHeight(50);
-	}
+    public Human(int x, int y, int health) {
+        super(x, y, 50, 50);
+        health = this.health;
+        this.setFill(Color.TRANSPARENT);
+        this.x = x;
+        this.y = y;
+        this.FR.setX(this.getX());
+        this.FR.setY(this.getY());
+        this.FR.setFitWidth(50);
+        this.FR.setFitHeight(50);
+        this.FL.setX(this.getX());
+        this.FL.setY(this.getY());
+        this.FL.setFitWidth(50);
+        this.FL.setFitHeight(50);
+    }
 
-	double getX(double x) {
-    	return this.x;
-	}
+    double getX(double x) {
+        return this.x;
+    }
 
-	double getY(double y) {
-    	return this.y;
-	}
+    double getY(double y) {
+        return this.y;
+    }
 
-	void setX(int x) {
-    	this.x = x;
-	}
+    void setX(int x) {
+        this.x = x;
+    }
 
-	void setY(int y) {
-    	this.y = y;
-	}
+    void setY(int y) {
+        this.y = y;
+    }
 
-	int getScore() {
-    	return this.score;
-	}
+    int getScore() {
+        return this.score;
+    }
 
-	void setScore(int score) {
-    	this.score = score;
-	}
+    void setScore(int score) {
+        this.score = score;
+    }
 
-	void moveRight() {
-    	this.x += this.speed;
-    	super.setX(this.x);
-    	this.FR.setOpacity(100);
-    	this.FR.setX(this.getX());
-    	this.FR.setY(this.getY());
-    	this.FL.setOpacity(0);
-	}
+    void moveRight() {
+        this.x += this.speed;
+        super.setX(this.x);
+        this.FR.setOpacity(100);
+        this.FR.setX(this.getX());
+        this.FR.setY(this.getY());
+        this.FL.setOpacity(0);
+    }
 
-	void moveLeft() {
-    	this.x -= this.speed;
-    	super.setX(this.x);
-    	this.FL.setOpacity(100);
-    	this.FL.setX(this.getX());
-    	this.FL.setY(this.getY());
-    	this.FR.setOpacity(0);
-	}
+    void moveLeft() {
+        this.x -= this.speed;
+        super.setX(this.x);
+        this.FL.setOpacity(100);
+        this.FL.setX(this.getX());
+        this.FL.setY(this.getY());
+        this.FR.setOpacity(0);
+    }
 
-	boolean amItouch(Platform[] testList) {
-    	for (Platform c : testList) {
-        	Bounds testbounds = new BoundingBox(c.getX(), c.getY() - 2, 0, c.getWidth() - 5, .95, 0);
-        	if (this.getBoundsInParent().intersects(testbounds)) {
-            	return true;
-        	}
-    	}
-    	return false;
+    boolean collect(Collect rtx) {
 
-	}
+        Bounds testbounds = new BoundingBox(rtx.getX(), rtx.getY() - 2, 0, rtx.getWidth() - 5, .95, 0);
+        if (this.getBoundsInParent().intersects(testbounds)) {
+            return true;
+        }
 
-	boolean amItouchE(Badguys[] badarrayz) {
-    	for (Badguys b : badarrayz) {
-        	Bounds bbounds = new BoundingBox(b.getX(), b.getY(), 0, b.getWidth(), b.getHeight(), 0);
-        	if (this.getBoundsInParent().intersects(bbounds)) {
-            	return true;
-        	}
-    	}
-    	return false;
+        return false;
 
-	}
+    }
 
-	boolean amIWin(Win win) {
-    	System.out.println("checking for a win ");
-    	Bounds winbounds = new BoundingBox(win.getX(), win.getY() - 2, 0, win.getWidth() - 5, .95, 0);
-    	if (this.getBoundsInParent().intersects(winbounds)) {
-        	return true;
-    	}
-    	return false;
+    boolean amItouch(Platform[] testList) {
+        for (Platform c : testList) {
+            Bounds testbounds = new BoundingBox(c.getX(), c.getY() - 2, 0, c.getWidth() - 5, .95, 0);
+            if (this.getBoundsInParent().intersects(testbounds)) {
+                return true;
+            }
+        }
+        return false;
 
-	}
+    }
 
-	void update() {
-    	this.FR.setX(this.getX());
-    	this.FR.setY(this.getY());
-    	this.FL.setX(this.getX());
-    	this.FL.setY(this.getY());
-	}
+    boolean amItouchE(Badguys[] badarrayz) {
+        for (Badguys b : badarrayz) {
+            Bounds bbounds = new BoundingBox(b.getX(), b.getY(), 0, b.getWidth(), b.getHeight(), 0);
+            if (this.getBoundsInParent().intersects(bbounds)) {
+                return true;
+            }
+        }
+        return false;
 
- 
+    }
+
+    boolean amIWin(Win win) {
+        if (!this.woneone) {
+            Bounds winbounds = new BoundingBox(win.getX(), win.getY() - 2, 0, win.getWidth() - 5, .95, 0);
+            if (this.getBoundsInParent().intersects(winbounds)) {
+
+                this.woneone = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    boolean amIWinFinal(Win win2) {
+        Bounds winbounds = new BoundingBox(win2.getX(), win2.getY() - 2, 0, win2.getWidth() - 5, .95, 0);
+        if (this.getBoundsInParent().intersects(winbounds)) {
+            return true;
+        }
+        return false;
+    }
+
+    void update() {
+        this.FR.setX(this.getX());
+        this.FR.setY(this.getY());
+        this.FL.setX(this.getX());
+        this.FL.setY(this.getY());
+    }
 
 }
 
 class Badguys extends Rectangle {
 
-	double x;
-	double y;
-	int health;
-	double speed;
-	boolean direction;
-	boolean isMove = true;
-	Image BadGuyR = new Image("file:src/BadGuyR.png");
-	public ImageView BGR = new ImageView(BadGuyR);
-	Image BadGuyL = new Image("file:src/BadGuyL.png");
-	public ImageView BGL = new ImageView(BadGuyL);
-	Image BadGuyS = new Image("file:src/BadGuyS.png");
-	public ImageView BGS = new ImageView(BadGuyS);
+    double x;
+    double y;
+    int health;
+    double speed;
+    boolean direction;
+    boolean isMove = true;
+    Image BadGuyR = new Image("file:src/BadGuyR.png");
+    public ImageView BGR = new ImageView(BadGuyR);
+    Image BadGuyL = new Image("file:src/BadGuyL.png");
+    public ImageView BGL = new ImageView(BadGuyL);
+    Image BadGuyS = new Image("file:src/BadGuyS.png");
+    public ImageView BGS = new ImageView(BadGuyS);
 
-	public Badguys(int x, int y, int health, double speed) {
-    	super(x, y, 50, 50);
-    	this.health = health;
-    	this.speed = speed;
-    	this.setFill(Color.TRANSPARENT);
-    	this.x = x;
-    	this.y = y;
-    	this.BGR.setX(this.getX());
-    	this.BGR.setY(this.getY());
-    	this.BGR.setFitWidth(50);
-    	this.BGR.setFitHeight(50);
-    	this.BGL.setX(this.getX());
-    	this.BGL.setY(this.getY());
-    	this.BGL.setFitWidth(50);
-    	this.BGL.setFitHeight(50);
-    	this.BGS.setX(this.getX());
-    	this.BGS.setY(this.getY());
-    	this.BGS.setFitWidth(50);
-    	this.BGS.setFitHeight(50);
-	}
+    public Badguys(int x, int y, int health, double speed) {
+        super(x, y, 50, 50);
+        this.health = health;
+        this.speed = speed;
+        this.setFill(Color.TRANSPARENT);
+        this.x = x;
+        this.y = y;
+        this.BGR.setX(this.getX());
+        this.BGR.setY(this.getY());
+        this.BGR.setFitWidth(50);
+        this.BGR.setFitHeight(50);
+        this.BGL.setX(this.getX());
+        this.BGL.setY(this.getY());
+        this.BGL.setFitWidth(50);
+        this.BGL.setFitHeight(50);
+        this.BGS.setX(this.getX());
+        this.BGS.setY(this.getY());
+        this.BGS.setFitWidth(50);
+        this.BGS.setFitHeight(50);
+    }
 
-	double getX(double x) {
-    	return this.x;
-	}
+    double getX(double x) {
+        return this.x;
+    }
 
-	double getY(double y) {
-    	return this.y;
-	}
+    double getY(double y) {
+        return this.y;
+    }
 
-	void setX(int x) {
-    	this.x = x;
-	}
+    void setX(int x) {
+        this.x = x;
+    }
 
-	void setY(int y) {
-    	this.y = y;
-	}
+    void setY(int y) {
+        this.y = y;
+    }
 
-	void moveRight() {
-    	this.x += this.speed;
-    	super.setX(this.x);
-    	this.BGR.setOpacity(100);
-    	this.BGR.setX(this.getX());
-    	this.BGR.setY(this.getY());
-    	this.BGL.setOpacity(0);
-    	this.BGS.setOpacity(0);
-	}
+    void moveRight() {
+        this.x += this.speed;
+        super.setX(this.x);
+        this.BGR.setOpacity(100);
+        this.BGR.setX(this.getX());
+        this.BGR.setY(this.getY());
+        this.BGL.setOpacity(0);
+        this.BGS.setOpacity(0);
+    }
 
-	void moveLeft() {
-    	this.x -= this.speed;
-    	super.setX(this.x);
-    	this.BGL.setOpacity(100);
-    	this.BGL.setX(this.getX());
-    	this.BGL.setY(this.getY());
-    	this.BGR.setOpacity(0);
-    	this.BGS.setOpacity(0);
-	}
+    void moveLeft() {
+        this.x -= this.speed;
+        super.setX(this.x);
+        this.BGL.setOpacity(100);
+        this.BGL.setX(this.getX());
+        this.BGL.setY(this.getY());
+        this.BGR.setOpacity(0);
+        this.BGS.setOpacity(0);
+    }
 
-	void moveUp(double speed) {
-    	super.setY(this.y);
-    	this.y -= speed;
-	}
+    void moveUp(double speed) {
+        super.setY(this.y);
+        this.y -= speed;
+    }
 
-	void moveDown() {
-    	this.y += this.speed;
-    	super.setY(this.y);
-	}
+    void moveDown() {
+        this.y += this.speed;
+        super.setY(this.y);
+    }
 
-	void moveNo() {
-    	this.isMove = false;
-    	this.BGS.setOpacity(100);
-    	this.BGS.setX(this.getX());
-    	this.BGS.setY(this.getY());
-    	this.BGR.setOpacity(0);
-    	this.BGL.setOpacity(0);
-	}
+    void moveNo() {
+        this.isMove = false;
+        this.BGS.setOpacity(100);
+        this.BGS.setX(this.getX());
+        this.BGS.setY(this.getY());
+        this.BGR.setOpacity(0);
+        this.BGL.setOpacity(0);
+    }
 }
 
 class Platform extends Rectangle {
 
-	int x;
-	int y;
+    int x;
+    int y;
 
-	public Platform(int x, int y) {
-    	super(x, y, 100, 10);
-    	this.setFill(Color.BLACK);
-	}
+    public Platform(int x, int y) {
+        super(x, y, 100, 10);
+        this.setFill(Color.BLACK);
+    }
 
-	void setX(int x) {
-    	this.x = x;
-	}
+    void setX(int x) {
+        this.x = x;
+    }
 
-	void setY(int y) {
-    	this.y = y;
-	}
+    void setY(int y) {
+        this.y = y;
+    }
 
-	void moveRight() {
-    	this.x += 1;
-    	super.setX(this.x + 1);
-	}
+    void moveRight() {
+        this.x += 1;
+        super.setX(this.x + 1);
+    }
 
-	void moveLeft() {
-    	this.x -= 1;
-    	super.setX(this.x - 1);
-	}
+    void moveLeft() {
+        this.x -= 1;
+        super.setX(this.x - 1);
+    }
 
-	void moveUp() {
-    	this.y = this.y - 1;
-    	super.setY(this.y - 1);
-	}
+    void moveUp() {
+        this.y = this.y - 1;
+        super.setY(this.y - 1);
+    }
 
-	void moveDown() {
-    	this.y += 1;
-    	super.setY(this.y + 1);
-	}
+    void moveDown() {
+        this.y += 1;
+        super.setY(this.y + 1);
+    }
 
 }
 
 class Win extends Rectangle {
 
-	int x;
-	int y;
+    int x;
+    int y;
 
-	public Win(int x, int y) {
-    	super(x, y, 100, 10);
-    	this.setFill(Color.GREEN);
-	}
+    public Win(int x, int y) {
+        super(x, y, 100, 10);
+        this.setFill(Color.GREEN);
+    }
 
-	void setX(int x) {
-    	this.x = x;
-	}
+    void setX(int x) {
+        this.x = x;
+    }
 
-	void setY(int y) {
-    	this.y = y;
-	}
+    void setY(int y) {
+        this.y = y;
+    }
 
-	void moveRight() {
-    	this.x += 1;
-    	super.setX(this.x + 1);
-	}
+    void moveRight() {
+        this.x += 1;
+        super.setX(this.x + 1);
+    }
 
-	void moveLeft() {
-    	this.x -= 1;
-    	super.setX(this.x - 1);
-	}
+    void moveLeft() {
+        this.x -= 1;
+        super.setX(this.x - 1);
+    }
 
-	void moveUp() {
-    	this.y = this.y - 1;
-    	super.setY(this.y - 1);
-	}
+    void moveUp() {
+        this.y = this.y - 1;
+        super.setY(this.y - 1);
+    }
 
-	void moveDown() {
-    	this.y += 1;
-    	super.setY(this.y + 1);
-	}
+    void moveDown() {
+        this.y += 1;
+        super.setY(this.y + 1);
+    }
 }
 
+class Collect extends Rectangle {
 
+    int x;
+    int y;
+    Image RTX2060 = new Image("file:src/RTX2060.png");
+    public ImageView photo = new ImageView(RTX2060);
 
+    public Collect(int x, int y) {
+        super(x, y, 100, 50);
+        this.setFill(Color.TRANSPARENT);
+        this.x = x;
+        this.y = y;
+
+        this.photo.setFitWidth(100);
+        this.photo.setFitHeight(50);
+        this.photo.setX(this.getX());
+        this.photo.setY(this.getY());
+    }
+
+    int getX(int x) {
+        return this.x;
+    }
+
+    int getY(int y) {
+        return this.y;
+    }
+
+    void setX(int x) {
+        this.x = x;
+    }
+
+    void setY(int y) {
+        this.y = y;
+    }
+}
