@@ -28,12 +28,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.util.Duration;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 
 public class MostBasicJavaFXMove extends Application {
 
@@ -45,11 +45,15 @@ public class MostBasicJavaFXMove extends Application {
     Badguys[] badarrayz, badarrayz2;
     double velY;
     Text score, wintext, lose, lose2, mctext, enter;
-    Media media, media2;
-    MediaPlayer beat, Rick;
+    Media media, media2, media3, media4;
+    MediaPlayer beat, Rick, Bass, All;
     Human henry;
     Win win, win2;
     Collect rtx;
+    boolean s1 = true;
+    boolean s2 = false;
+    boolean s3 = false;
+    boolean s4 = false;
 
     @Override
     public void start(Stage primaryStage) {
@@ -74,6 +78,12 @@ public class MostBasicJavaFXMove extends Application {
 
         media2 = new Media("file:///home/james/Downloads/MostBasicJavaFXMove/src/NeverGonna.wav");
         Rick = new MediaPlayer(media2);
+
+        media3 = new Media("file:///home/james/Downloads/MostBasicJavaFXMove/src/TakeOnMeBass.wav");
+        Bass = new MediaPlayer(media3);
+
+        media4 = new Media("file:///home/james/Downloads/MostBasicJavaFXMove/src/AllStar.wav");
+        All = new MediaPlayer(media4);
 
         primaryStage.setTitle("Game");
 
@@ -100,7 +110,7 @@ public class MostBasicJavaFXMove extends Application {
         score.setFill(Color.TRANSPARENT);
         score.setFont(theFont2);
 
-        wintext = new Text(canvas.getWidth() / 2 - 100, 100, "Winner!");
+        wintext = new Text(canvas.getWidth() / 2 - 150, 100, "Winner!");
         wintext.setTextAlignment(TextAlignment.CENTER);
         wintext.setFill(Color.TRANSPARENT);
         wintext.setFont(theFont2);
@@ -207,12 +217,109 @@ public class MostBasicJavaFXMove extends Application {
                 if (event.getCode() == KeyCode.J) {
                     beat.play();
                     Rick.pause();
+                    Bass.pause();
+                    All.pause();
+                    s1 = true;
+                    s2 = false;
+                    s3 = false;
+                    s4 = false;
+
                 }
                 if (event.getCode() == KeyCode.K) {
                     beat.pause();
                     Rick.play();
+                    Bass.pause();
+                    All.pause();
+                    s1 = false;
+                    s2 = true;
+                    s3 = false;
+                    s4 = false;
                 }
-                
+
+                if (event.getCode() == KeyCode.L) {
+                    beat.pause();
+                    Rick.pause();
+                    Bass.play();
+                    All.pause();
+                    s1 = false;
+                    s2 = false;
+                    s3 = true;
+                    s4 = false;
+                }
+                if (event.getCode() == KeyCode.H) {
+                    beat.pause();
+                    Rick.pause();
+                    Bass.pause();
+                    All.play();
+                    s1 = false;
+                    s2 = false;
+                    s3 = false;
+                    s4 = true;
+                }
+                if (event.getCode() == KeyCode.P) {
+                    beat.pause();
+                    Rick.pause();
+                    Bass.pause();
+                    All.pause();
+                    s1 = false;
+                    s2 = false;
+                    s3 = false;
+                    s4 = false;
+                }
+                if (s1) {
+                    if (event.getCode() == KeyCode.M) {
+                        beat.seek(Duration.seconds(beat.getCurrentTime().toSeconds() + 10));
+
+                    }
+                    if (event.getCode() == KeyCode.N) {
+                        beat.seek(Duration.seconds(beat.getCurrentTime().toSeconds() - 10));
+
+                    }
+                }
+                if (s2) {
+                    if (event.getCode() == KeyCode.M) {
+                        Rick.seek(Duration.seconds(Rick.getCurrentTime().toSeconds() + 10));
+
+                    }
+                    if (event.getCode() == KeyCode.N) {
+                        Rick.seek(Duration.seconds(Rick.getCurrentTime().toSeconds() - 10));
+
+                    }
+                }
+                if (s3) {
+                    if (event.getCode() == KeyCode.M) {
+                        Bass.seek(Duration.seconds(Bass.getCurrentTime().toSeconds() + 10));
+
+                    }
+                    if (event.getCode() == KeyCode.N) {
+                        Bass.seek(Duration.seconds(Bass.getCurrentTime().toSeconds() - 10));
+
+                    }
+                }
+
+                if (s4) {
+                    if (event.getCode() == KeyCode.M) {
+                        All.seek(Duration.seconds(All.getCurrentTime().toSeconds() + 10));
+
+                    }
+                    if (event.getCode() == KeyCode.N) {
+                        All.seek(Duration.seconds(All.getCurrentTime().toSeconds() - 10));
+
+                    }
+                }
+
+                if (event.getCode() == KeyCode.B) {
+                    beat.setVolume(beat.getVolume() + .1);
+                    Rick.setVolume(Rick.getVolume() + .1);
+                    Bass.setVolume(Bass.getVolume() + .1);
+                    All.setVolume(All.getVolume() + .1);
+                }
+                if (event.getCode() == KeyCode.V) {
+                    beat.setVolume(beat.getVolume() - .1);
+                    Rick.setVolume(Rick.getVolume() - .1);
+                    Bass.setVolume(Bass.getVolume() - .1);
+                    All.setVolume(All.getVolume() - .1);
+                }
                 if (henry.getX() > 400) {
                     henry.x = 400;
                 } else if (henry.getX() < 10) {
