@@ -1,5 +1,6 @@
 package mostbasicjavafxmove;
 
+import java.io.File;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.animation.PauseTransition;
@@ -72,17 +73,17 @@ public class MostBasicJavaFXMove extends Application {
         win2 = new Win(3, 950);
         rtx = new Collect(250, 400);
 
-        media = new Media("file:///home/james/Downloads/MostBasicJavaFXMove/src/Funk.wav");
+        media = new Media(new File("src/Funk.wav").toURI().toString());
         beat = new MediaPlayer(media);
         beat.play();
 
-        media2 = new Media("file:///home/james/Downloads/MostBasicJavaFXMove/src/NeverGonna.wav");
+        media2 = new Media(new File("src/NeverGonna.wav").toURI().toString());
         Rick = new MediaPlayer(media2);
 
-        media3 = new Media("file:///home/james/Downloads/MostBasicJavaFXMove/src/TakeOnMeBass.wav");
+        media3 = new Media(new File("src/TakeOnMeBass.wav").toURI().toString());
         Bass = new MediaPlayer(media3);
 
-        media4 = new Media("file:///home/james/Downloads/MostBasicJavaFXMove/src/AllStar.wav");
+        media4 = new Media(new File("src/AllStar.wav").toURI().toString());
         All = new MediaPlayer(media4);
 
         primaryStage.setTitle("Game");
